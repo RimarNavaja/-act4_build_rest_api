@@ -1,4 +1,5 @@
-import express, { Request, Response } from "express";
+import express from "express";
+import { Request, Response } from "express";
 import { UnitUser, User } from "./user.interface";
 import { StatusCodes } from "http-status-codes";
 import * as database from "./user.database";
@@ -8,34 +9,32 @@ export const userRouter = express.Router();
 userRouter.get("/users", async (req: Request, res: Response) => {
   try {
     const allUsers: UnitUser[] = await database.findAll();
-    if (!allUsers || allUsers.length === 0) {
+    if (!allUsers) {
       return res
         .status(StatusCodes.NOT_FOUND)
-        .json({ message: "No users at this time" });
+        .json({ msg: "No users at this time..." });
     }
     return res
       .status(StatusCodes.OK)
-      .json({ totalUsers: allUsers.length, allUsers });
+      .json({ total_user: allUsers.length, allUsers });
   } catch (error) {
-    return res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ error: (error as Error).message });
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error });
   }
 });
 
 userRouter.get("/users/:id", async (req: Request, res: Response) => {
   try {
-    const user: UnitUser | null = await database.findOne(req.params.id);
+    const user: UnitUser = await database.findOne(req.params.id);
+
     if (!user) {
       return res
         .status(StatusCodes.NOT_FOUND)
-        .json({ message: "User not found" });
+        .json({ error: `User not found!` });
     }
+
     return res.status(StatusCodes.OK).json({ user });
   } catch (error) {
-    return res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ error: (error as Error).message });
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error });
   }
 });
 
@@ -50,15 +49,15 @@ userRouter.post("/register", async (req: Request, res: Response) => {
     const user = await database.findByEmail(email);
     if (user) {
       return res
-        .status(StatusCodes.CONFLICT)
-        .json({ error: "This email has already been registered" });
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ error: "This Email has already been registered..." });
     }
-    const newUser = await database.create({ username, email, password });
+
+    const newUser = await database.create(req.body);
+
     return res.status(StatusCodes.CREATED).json({ newUser });
   } catch (error) {
-    return res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ error: (error as Error).message });
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error });
   }
 });
 
@@ -68,62 +67,69 @@ userRouter.post("/login", async (req: Request, res: Response) => {
     if (!email || !password) {
       return res
         .status(StatusCodes.BAD_REQUEST)
-        .json({ error: "Please provide all required parameters" });
+        .json({ error: "Please provide all the required parameters..." });
     }
-    const user = await database.comparePassword(email, password);
+    const user = await database.findByEmail(email);
+
     if (!user) {
       return res
-        .status(StatusCodes.UNAUTHORIZED)
-        .json({ error: "Invalid email or password" });
+        .status(StatusCodes.NOT_FOUND)
+        .json({ error: "No user exists with the email provided..." });
     }
+
+    const comparePassword = await database.comparePassword(email, password);
+    if (!comparePassword) {
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ error: "Incorrect password..." });
+    }
+
     return res.status(StatusCodes.OK).json({ user });
   } catch (error) {
-    return res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ error: (error as Error).message });
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error });
   }
 });
 
 userRouter.put("/users/:id", async (req: Request, res: Response) => {
   try {
     const { username, email, password } = req.body;
+
+    const getUser = await database.findOne(req.params.id);
     if (!username || !email || !password) {
       return res
-        .status(StatusCodes.BAD_REQUEST)
-        .json({ error: "Please provide all required parameters" });
+        .status(401)
+        .json({ error: `Please provide all the required parameters...` });
     }
-    const updatedUser = await database.update(req.params.id, {
-      username,
-      email,
-      password,
-    });
-    if (!updatedUser) {
+    if (!getUser) {
       return res
-        .status(StatusCodes.NOT_FOUND)
-        .json({ error: `No user with id ${req.params.id}` });
+        .status(404)
+        .json({ error: `No user with ID ${req.params.id}` });
     }
-    return res.status(StatusCodes.OK).json({ updatedUser });
+    const updateUser = await database.update(req.params.id, req.body);
+
+    return res.status(201).json({ updateUser });
   } catch (error) {
-    return res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ error: (error as Error).message });
+    console.log(error);
+    return res.status(500).json({ error });
   }
 });
 
-userRouter.delete("/users/:id", async (req: Request, res: Response) => {
+userRouter.delete("/user/:id", async (req: Request, res: Response) => {
   try {
-    const result = await database.remove(req.params.id);
-    if (!result) {
+    const id = req.params.id;
+
+    const user = await database.findOne(id);
+
+    if (!user) {
       return res
         .status(StatusCodes.NOT_FOUND)
-        .json({ error: "User does not exist" });
+        .json({ error: `User does not exist` });
     }
-    return res
-      .status(StatusCodes.OK)
-      .json({ message: "User deleted successfully" });
+
+    await database.remove(id);
+
+    return res.status(StatusCodes.OK).json({ msg: "User deleted" });
   } catch (error) {
-    return res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ error: (error as Error).message });
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error });
   }
 });

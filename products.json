@@ -1,0 +1,16 @@
+{
+  "dee4e7f3-44eb-4401-9e7e-b4329857192c": {
+    "id": "dee4e7f3-44eb-4401-9e7e-b4329857192c",
+    "name": "casio",
+    "price": 3002,
+    "quantity": 1232,
+    "image": "image_url12.png"
+  },
+  "7b00253f-779e-467e-96af-c49ac0c16abc": {
+    "id": "7b00253f-779e-467e-96af-c49ac0c16abc",
+    "name": "rolex divers watch ",
+    "price": 30022,
+    "quantity": 12322,
+    "image": "image_url112.png"
+  }
+}

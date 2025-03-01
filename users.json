@@ -1,1 +1,20 @@
-{"b8039f60-3830-4912-a3ab-344e1efae546":{"id":"b8039f60-3830-4912-a3ab-344e1efae546","username":"stephen","email":"stephen@gmail.com","password":"$2b$10$vH0wT9so3tehaWp2Q95bFeyYD7ElJwbUZWJKnERT018qmhodnxKvK"},"e92ee0ba-466f-4c0a-bc8f-e715e8cbd2d4":{"id":"e92ee0ba-466f-4c0a-bc8f-e715e8cbd2d4","username":"stephen1","email":"stephen1@gmail.com","password":"$2b$10$MQOdpsGDEOtbV6oUr6ft7.6ZesLk8JPNfsn.7ymwMepwWATeDnHKq"}}
+{
+  "a693fa6c-5845-496a-b67d-c52e2d8f9432": {
+    "id": "a693fa6c-5845-496a-b67d-c52e2d8f9432",
+    "username": "stephen123",
+    "email": "stephen123@gmail.com",
+    "password": "$2b$10$2Y.uM/.naqEJja0rUnYRu.YXTpBNImIqT6XuPHp9L3sFNHY4spTUS"
+  },
+  "c99e53c3-9ebd-40b3-8f83-7134bd2b0014": {
+    "id": "c99e53c3-9ebd-40b3-8f83-7134bd2b0014",
+    "username": "rimarnavaja",
+    "email": "rimar@gmail.com",
+    "password": "$2b$10$HlMNmlH8X4vcGXnTZ5MOouMcGhGwuvi1wApug9m/YQIeJB9FKqHj."
+  },
+  "96a6848a-05a4-4087-ac4b-5182617c32f4": {
+    "id": "96a6848a-05a4-4087-ac4b-5182617c32f4",
+    "username": "rimarnavaja111",
+    "email": "rimar111@gmail.com",
+    "password": "$2b$10$4wUTeW.Bw1KCMoZV1j9CveaS.Ba0YDT0ZadY3iIDcTL/H58L6m9eK"
+  }
+}
